@@ -41,9 +41,26 @@ const deleteSelector = document.getElementById("deleteMember");
 const updateSelector = document.getElementById("updateMember");
 const data = document.getElementById("data");
 
+function setAttributes() {
+  const attributes = {
+    disabled: "",
+    selected: "",
+    hidden: "",
+  };
+  let element = document.createElement("option");
+  element.innerHTML = "Select One";
+  Object.keys(attributes).forEach((attr) => {
+    element.setAttribute(attr, attributes[attr]);
+  });
+  return element;
+}
+
 onSnapshot(colRef, (snapshot) => {
   deleteSelector.innerHTML = "";
   updateSelector.innerHTML = "";
+  deleteSelector.appendChild(setAttributes());
+  updateSelector.appendChild(setAttributes());
+  //
   data.innerHTML = "";
   const memberslist = [];
   snapshot.forEach((doc) => {
@@ -68,18 +85,10 @@ onSnapshot(colRef, (snapshot) => {
     updateItem.innerHTML = `${memberslist[x].name} ${memberslist[x].access}`;
 
     data.appendChild(displayItem);
-
     deleteSelector.appendChild(deleteItem);
     updateSelector.appendChild(updateItem);
   }
 });
-// const q = query(collection(db, "members"), where("access", "==", 1));
-
-// const querySnapshot = await getDocs(q);
-// querySnapshot.forEach((doc) => {
-//   // doc.data() is never undefined for query doc snapshots
-//   console.log(doc.id, " => ", doc.data());
-// });
 
 const deleteMembers = document.querySelector(".delete");
 deleteMembers.addEventListener("submit", (e) => {
@@ -91,38 +100,4 @@ deleteMembers.addEventListener("submit", (e) => {
   deleteDoc(docRef).then(() => {
     deleteMembers.reset();
   });
-});
-
-const updateMember = document.querySelector(".update");
-
-updateMember.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const member = document.getElementById("updateMember");
-  const changeName = document.getElementById("changeName");
-  const changeAccess = document.getElementById("changeAccess");
-
-  const docRef = doc(db, "members", member.value);
-
-  if (changeName.value != "" && changeAccess.value != "") {
-    updateDoc(docRef, {
-      name: changeName.value,
-      access: changeAccess.value,
-    }).then(() => {
-      updateMember.reset();
-    });
-  } else if (changeName.value != "") {
-    updateDoc(docRef, {
-      name: changeName.value,
-    }).then(() => {
-      updateMember.reset();
-    });
-  } else if (changeAccess.value != "") {
-    updateDoc(docRef, {
-      access: parseInt(changeAccess.value),
-    }).then(() => {
-      updateMember.reset();
-    });
-  } else {
-    alert("nothing is here");
-  }
 });

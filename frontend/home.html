@@ -33,22 +33,22 @@
     <h3>Delete Mmeber</h3>
     <form class="delete">
       <label for="deleteMember">Delete a Member </label>
-      <select id="deleteMember">
-        <option value="" disabled selected hidden>
-          Who would you like to delete
-        </option>
-      </select>
+      <select id="deleteMember"></select>
       <button>Delete</button>
     </form>
     <h3>Update Member</h3>
-    <form class="update">
+    <form
+      action=" http://192.168.254.125:5001/update"
+      method="POST"
+      enctype="multipart/form-data"
+    >
       <label for="updateMember">Update a Member</label>
-      <select name="" id="updateMember"></select>
+      <select id="updateMember" name="updateMember"></select>
       <label for="changeName">Update Name</label>
-      <input type="text" id="changeName" />
+      <input type="text" name="changeName" />
       <label for="">Update Access Tier</label>
-      <input type="number" id="changeAccess" />
-      <button>Update</button>
+      <input type="number" name="changeAccess" />
+      <input type="submit" value="Update" />
     </form>
   </body>
   <script type="module" src="./home.js"></script>

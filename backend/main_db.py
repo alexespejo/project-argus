@@ -47,15 +47,23 @@ class Members(object):
             "lastAccess": self.lastAccess,
             "image": self.image
         }
-    # def update_memebr(self, id, name, access):
-    #     for member in members_ref.stream():
-    #         if member.id == id:
-    #             if (name != '' and access != ''): 
-    #                 member.document(id).update({
-    #                     u'name': name,
-    #                     u'access': int(access)
-    #                 })
-        return
+
+    def update_member( id, name, access):
+        update_ref = members_ref.document(id)
+        if (name != "" and access != ""):
+            update_ref.update({
+                u'name': name,
+                u'access': int(access)
+            })
+        elif (name != ""):
+            update_ref.update({
+                u'name':name
+            })
+        elif (access != ""):
+            update_ref.update({
+                u'access': int(access)
+            })
+
     def __repr__(self):
         return(
             f'Members(\
@@ -97,22 +105,4 @@ def add_member(name, access, encoding):
 
 # print(members_ref.where(u'name', u'==', u'Alex').stream().to_dict())
 
-def update_member( id, name, access):
-    update_ref = members_ref.document(id)
-    if (name != "" and access != ""):
-        update_ref.update({
-            u'name': name,
-            u'access': access
-        })
-    elif (name != ""):
-        update_ref.update({
-            u'name':name
-        })
-    elif (access != ""):
-        update_ref.update({
-            u'access':access
-        })
-
-
-
-update_member('oLAeniVEp4CuYK9NBhFG', 'Matt', 3)
+Members.update_member('oLAeniVEp4CuYK9NBhFG', "", 3)

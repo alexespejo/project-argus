@@ -1,5 +1,3 @@
-
-from distutils.log import error
 import face_recognition
 from flask import Flask, render_template, request, redirect, Response
 import camera 
@@ -43,37 +41,19 @@ def upload_image():
 
         if file and allowed_file(file.filename):
             return detect_faces_in_image(name, access, file)
-    return 
+    return ('', 204)
 
-# @app.route('/update', methods=['GET', 'POST'])
-# def udpate_member():
-#     db.encoding.update()
-#     member = request.form.get("updateMember")
-#     changeName = request.form.get("changeName")
-#     changeAccess = request.form.get("changeAccess")
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+    db.encoding.update()
+    member = request.form.get("updateMember")
+    changeName = request.form.get("changeName")
+    changeAccess = request.form.get("changeAccess")
+    print(f'ID: {member}')
+    db.Members.update_member(member, changeName, changeAccess)
 
-#     docRef = db.members_ref.document(member)
-    
-#     if (changeName != "" and changeAccess != ""): 
-#         docRef.update({
-#             u'name': changeName,
-#             u'access': int(changeAccess),
-#             u'lastUpdated': dt.datetime.now()
-#         })
-#     elif (changeName != ""):
-#          docRef.update({
-#             u'name': changeName,
-#             u'lastUpdated': dt.datetime.now()
-#         })
-#     elif (changeAccess != ""):
-#          docRef.update({
-#             u'access': changeAccess,
-#             u'lastUpdated': dt.datetime.now()
-#         })
-#     else:
-#         print(error)
-    
-#     return
+    return ('', 204)
+
 @app.route('/members')
 def members():
     return db.encoding.get_members()
