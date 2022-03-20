@@ -6,7 +6,7 @@ import datetime as dt
 import numpy as np
 
 
-cred = credentials.Certificate("/Users/alex/Downloads/VS Code/argus/serviceAccountKey.json")
+cred = credentials.Certificate("/Users/alex/Downloads/VS Code/project-argus/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
