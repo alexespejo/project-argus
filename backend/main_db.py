@@ -85,7 +85,7 @@ class History(Members):
             u"timeAccess": dt.datetime.now(),
             u"locked": self.locked 
         }
-    
+
 
 
 class Encodings():
@@ -97,7 +97,7 @@ class Encodings():
         self.encodings = []
         self.names = []
         for member in members_ref.stream():
-            self.names.append(member.id)
+            self.names.append(member.to_dict().get("name"))
             self.encodings.append(np.array(member.to_dict().get("image")))
        
     def get_encodings(self):
@@ -115,4 +115,3 @@ def add_member(name, access, encoding):
 # doc_ref = db.collection(u'history')
 
 # doc_ref.add({u"name":"Erin",u"access":1,u"locked":False})
-

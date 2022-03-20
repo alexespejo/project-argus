@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, redirect, render_template, Response
 import cv2
 import face_recognition
 import numpy as np
@@ -42,6 +42,7 @@ def gen_frames():
                 best_match_index = np.argmin(face_distances)
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
+                    print(name)
                     #ds.add_log(name, dateTime)
                 face_names.append(name) 
 
@@ -68,7 +69,7 @@ def gen_frames():
 
 @app.route('/')
 def index():
-   return render_template('stream.html')
+   return redirect('/video_feed')
 
 @app.route('/video_feed')
 def video_feed():
