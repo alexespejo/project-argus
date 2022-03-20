@@ -36,10 +36,6 @@ import {
 const db = getFirestore();
 
 const colRef = collection(db, "members");
-// const q = query(colRef, orderBy("createdAt"));
-const deleteSelector = document.getElementById("deleteMember");
-const updateSelector = document.getElementById("updateMember");
-const data = document.getElementById("data");
 
 function setAttributes() {
   const attributes = {
@@ -54,6 +50,11 @@ function setAttributes() {
   });
   return element;
 }
+//Realtime updates UI for changes in the database
+//NOTES**** split up update and delete functionality into seperate files later on
+const deleteSelector = document.getElementById("deleteMember");
+const updateSelector = document.getElementById("updateMember");
+const data = document.getElementById("data");
 
 onSnapshot(colRef, (snapshot) => {
   deleteSelector.innerHTML = "";
@@ -89,7 +90,7 @@ onSnapshot(colRef, (snapshot) => {
     updateSelector.appendChild(updateItem);
   }
 });
-
+//DELETES Members based off a selection of user name
 const deleteMembers = document.querySelector(".delete");
 deleteMembers.addEventListener("submit", (e) => {
   e.preventDefault();
