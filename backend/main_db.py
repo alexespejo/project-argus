@@ -63,7 +63,7 @@ class Members(object):
             update_ref.update({
                 u'access': int(access)
             })
-
+    
     def __repr__(self):
         return(
             f'Members(\
@@ -73,6 +73,20 @@ class Members(object):
                 lastAccess={self.lastAccess}\
             )'
         )
+class History(Members):
+    def __init__(self, name, access=3, image=[], locked = False):
+        super().__init__(name, access, image)
+        self.locked = locked
+
+    def create_log(self):
+        return {
+            u"name": self.name,
+            u"access": self.access,
+            u"timeAccess": dt.datetime.now(),
+            u"locked": self.locked 
+        }
+    
+
 
 class Encodings():
     def __init__(self):
@@ -83,7 +97,7 @@ class Encodings():
         self.encodings = []
         self.names = []
         for member in members_ref.stream():
-            self.names.append(member.to_dict().get("name"))
+            self.names.append(member.id)
             self.encodings.append(np.array(member.to_dict().get("image")))
        
     def get_encodings(self):
@@ -98,11 +112,7 @@ encoding.update()
 def add_member(name, access, encoding):
     members_ref.add(Members(name, access, encoding).to_dict())
 
-# history_ref.add(members_ref.document(u'oLAeniVEp4CuYK9NBhFG'))
-# for member in members_ref.stream():
-#     if member.id == 'oLAeniVEp4CuYK9NBhFG':
-#         print(member.to_dict())
+# doc_ref = db.collection(u'history')
 
-# print(members_ref.where(u'name', u'==', u'Alex').stream().to_dict())
+# doc_ref.add({u"name":"Erin",u"access":1,u"locked":False})
 
-Members.update_member('oLAeniVEp4CuYK9NBhFG', "", 3)
