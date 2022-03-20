@@ -14,3 +14,9 @@ To build out the camera I used the Python OpenCV and face recognition libraries 
 The web application is being built using vanilla HTML but I soon hope to implement React/React Native into the final project
 
 The camera and web app backends are built with Flask and Firebase using the Firestore as the main database
+
+### Technologies
+
+IOT: Raspberry PI, Raspberry PI Camera V2, Python, Flask, OpenCV
+APP: HTML, CSS, JavaScript, React, Tailwind, SCSS
+BACKEND: Python, Flask, Firebase, Firestore
