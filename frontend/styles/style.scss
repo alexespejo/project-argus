@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Varela+Round&display=swap");
+body {
+  font-family: "Varela Round", sans-serif;
+  padding: 0;
+  box-sizing: border-box;
+  display: block;
+}
+
+button,
+input[type="submit"] {
+  color: white;
+  background: rgb(42, 157, 252);
+  margin: 0.2rem;
+  padding: 0.5rem;
+  font-size: 0.9em;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.2rem 0.2rem rgba(136, 136, 136, 0.8);
+  cursor: pointer;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+input[type="text"],
+[type="number"] {
+  display: block;
+  padding: 0.4rem 0.5rem;
+  border-radius: 1rem;
+  border: 0.1rem rgba(0, 0, 0, 0.1) solid;
+  outline: none;
+}
+select {
+  font-size: 1em;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 2px 2px 4px rgba(136, 136, 136, 0.8);
+  padding: 0.4rem;
+  margin: 0.8rem 0.3rem;
+  cursor: pointer;
+  outline: none;
+}
+form {
+  box-shadow: 1px 2px 3px 1px rgba(136, 136, 136, 0.8);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+input[type="submit"] {
+  cursor: pointer;
+}
+img {
+  width: 100%;
+  border-radius: 1rem;
+  box-shadow: 1px 2px 3px 1px rgba(136, 136, 136, 0.8);
+}
+h3 {
+  margin: 0;
+  padding: 0.5rem;
+}
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.custom-file-input {
+  color: white;
+  width: 8rem;
+  border: 0.1rem rgba(0, 0, 0, 0.1) solid;
+  border-radius: 0.5rem;
+  &::before {
+    content: "Upload File";
+    color: black;
+    display: inline-block;
+    background: white;
+    padding: 0.5rem;
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-size: 10pt;
+    width: 100%;
+  }
+}
