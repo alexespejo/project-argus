@@ -1,7 +1,0 @@
- .replace(/("|{|}|)/g, "")
-      .replace(/,/g, " ")
-      .replace(/:/g, "")
-      .replace(/name/i, "")
-      .replace(/access/i, "Access Tier: ");
-
-      
