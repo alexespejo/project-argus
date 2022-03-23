@@ -2,7 +2,7 @@ from flask import Flask, redirect, render_template, Response
 import cv2
 import face_recognition
 import numpy as np
-import main_db as db
+import firestore as db
 app=Flask(__name__)
 camera = cv2.VideoCapture(0)
 

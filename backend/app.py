@@ -1,7 +1,7 @@
 import face_recognition
 from flask import Flask, render_template, request, redirect, Response
 import camera 
-import main_db as db
+import firestore as db
 import datetime as dt 
 # You can change this to any folder on your system
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
