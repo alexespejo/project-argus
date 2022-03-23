@@ -48,7 +48,6 @@ def on_snapshot(col_snapshot, changes, read_time):
             print(f'Removed {change.document.id}')
             listener.set()
     print(changes)
-
 col_query =  members_ref
 
 query_watch = col_query.on_snapshot(on_snapshot)
@@ -99,7 +98,7 @@ class History():
         self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
 
     def check_limit(self):
-        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("date")
+        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("date") + get_config_camera_interval()
 
     def add_history(self, id):
         self.lastLog = []
@@ -112,16 +111,25 @@ class History():
                     u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
                     u'locked': False
                 })
+            members_ref.document(identity).update({u'lastAccess': dt.datetime.now()})
                 # history_ref.add(self.lastLog)
         history_ref.document(u'most_recent').set({'most_recent_log':self.lastLog})
+        if len(self.lastLog) == 1: 
+            history_ref.add(self.lastLog[0])
+        else: 
+            history_ref.add({u'history': self.lastLog})
         # print(self.lastLog.get("date"))
 
 history_log = History()    
 
-# history_log.add_history(['N6bchCXVzP1e6m4SA9qs', 'vUR4AGbeVdLoNm9OSJSi'])
 
 def config_camera_interval(cameraDuration):
     settings_ref.document(u'configurations').set({u'cameraDuration':cameraDuration})
+
+def get_config_camera_interval():
+    return  settings_ref.document(u'configurations').get().get('cameraDuration')
+
+print(get_config_camera_interval())
 
 def add_member(name, access, encoding):
     members_ref.add(Members(name, access, encoding).to_dict())

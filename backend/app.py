@@ -19,7 +19,7 @@ def detect_faces_in_image(name, access, file_stream):
     unknown_face_encodings = face_recognition.face_encodings(img)[0].tolist()
 
     db.add_member(name, access, unknown_face_encodings)
-    return redirect('/video')
+    return redirect('http://127.0.0.1:5500/frontend/home.html')
 
 @app.route('/')
 def home():
@@ -49,7 +49,7 @@ def update():
     member = request.form.get("updateMember")
     changeName = request.form.get("changeName")
     changeAccess = request.form.get("changeAccess")
-    print(f'ID: {member}')
+
     db.Members.update_member(member, changeName, changeAccess)
 
     return ('', 204)

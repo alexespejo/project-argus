@@ -46,7 +46,7 @@ def gen_frames():
                 print(face_names)
 
              
-            # Display the results
+            #Display the results
             for (top, right, bottom, left), name in zip(face_locations, face_names):
                 # Scale back up face locations since the frame we detected in was scaled to 1/4 size
                 top *= 4
