@@ -77,7 +77,7 @@ onSnapshot(colRef, (snapshot) => {
     const deleteItem = document.createElement("option");
     const updateItem = document.createElement("option");
 
-    displayItem.innerHTML = `${memberslist[x].name} Tier: ${memberslist[x].access}`;
+    displayItem.innerHTML = `${memberslist[x].name} Tier: ${memberslist[x].access} Last Access: ${memberslist[x].lastAccess}`;
 
     deleteItem.setAttribute("value", memberslist[x].id);
     updateItem.setAttribute("value", memberslist[x].id);

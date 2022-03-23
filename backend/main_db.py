@@ -10,48 +10,53 @@ cred = credentials.Certificate("/Users/alex/Downloads/VS Code/project-argus/serv
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+#create references for database collections 
 members_ref = db.collection(u'members')
 history_ref = db.collection(u'history')
 settings_ref = db.collection(u'settings')
-# Create a callback on_snapshot function to capture changes
-class Encodings():
-    def __init__(self):
-        self.encodings = []
-        self.names = []
-       
-    def update(self):
-        self.encodings = []
-        self.names = []
-        for member in members_ref.stream():
-            self.names.append(member.id)
-            self.encodings.append(np.array(member.to_dict().get("image")))
-       
-    def get_encodings(self):
-        return self.encodings
 
-    def get_names(self):
-        return self.names
 
-encoding = Encodings()
-encoding.update()
-
+#async listener 
+#updates the Encodings class for the  camera 
 listener = threading.Event()
 def on_snapshot(col_snapshot, changes, read_time):
     for change in changes:
-        if change.type.name == 'ADDED':
+        if change.type.name == 'ADDED' or change.type.name == 'MODIFIED':
             encoding.update()
-        elif change.type.name == 'MODIFIED':
-            print(f'Modified {change.document.id}')
-            encoding.update()
+            print(change.document.id)
         elif change.type.name == 'REMOVED':
             encoding.update()
             print(f'Removed {change.document.id}')
             listener.set()
     print(changes)
 col_query =  members_ref
-
 query_watch = col_query.on_snapshot(on_snapshot)
-class Members(object):
+
+
+class Encodings():  #initializes the encodings and names for the camera to read 
+    def __init__(self):
+        self.encodings = []
+        self.names = []
+       
+    #updates the encodings and names on every update 
+    def update(self): 
+        self.encodings = []
+        self.names = []
+        for member in members_ref.stream():
+            self.names.append(member.id)
+            self.encodings.append(np.array(member.to_dict().get("image")))
+
+    def get_encodings(self):
+        print(self.encodings)
+        return self.encodings
+
+    def get_names(self):
+        return self.names
+#initalizes encoding methods 
+encoding = Encodings()
+encoding.update()
+
+class Members(object): #creates a member for the database 
     def __init__(self, name, access = 3, image = []):
         self.name = name
         self.image = image
@@ -67,7 +72,7 @@ class Members(object):
             "lastAccess": self.lastAccess,
             "image": self.image
         }
-
+    #update member settings 
     def update_member(id, name, access):
         update_ref = members_ref.document(id)
         if (name != "" and access != ""):
@@ -93,7 +98,7 @@ class Members(object):
                 lastAccess={self.lastAccess}\
             )'
         )
-class History():
+class History(): #methods to interact with history collection 
     def __init__(self):
         self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
 
@@ -108,29 +113,28 @@ class History():
                     u'id': identity,
                     u'name': member.get("name"),
                     u'access': member.get("access"),
-                    u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
+                    u'timeStamp': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
                     u'locked': False
                 })
             members_ref.document(identity).update({u'lastAccess': dt.datetime.now()})
-                # history_ref.add(self.lastLog)
+        
         history_ref.document(u'most_recent').set({'most_recent_log':self.lastLog})
-        if len(self.lastLog) == 1: 
-            history_ref.add(self.lastLog[0])
-        else: 
-            history_ref.add({u'history': self.lastLog})
+        history_ref.add({
+            u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
+            u'history': self.lastLog})
         # print(self.lastLog.get("date"))
 
 history_log = History()    
 
-
+#update settings
 def config_camera_interval(cameraDuration):
     settings_ref.document(u'configurations').set({u'cameraDuration':cameraDuration})
 
 def get_config_camera_interval():
     return  settings_ref.document(u'configurations').get().get('cameraDuration')
-
 print(get_config_camera_interval())
 
+#add member to the database 
 def add_member(name, access, encoding):
     members_ref.add(Members(name, access, encoding).to_dict())
 
