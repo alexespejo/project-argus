@@ -22,8 +22,8 @@ def detect_faces_in_image(name, access, file_stream):
     return redirect('http://127.0.0.1:5500/frontend/home.html')
 
 @app.route('/')
-def home():
-    return render_template('index.html')
+def root():
+    return ('', 204)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_image():
@@ -62,10 +62,6 @@ def config():
 @app.route('/members')
 def members():
     return db.encoding.get_members()
-
-@app.route('/video')
-def video():
-    return render_template('stream.html')
 
 @app.route('/video_feed')
 def video_feed():
