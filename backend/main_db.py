@@ -4,7 +4,6 @@ from firebase_admin import firestore
 import threading 
 import datetime as dt
 import numpy as np
-from time import sleep 
 
 
 cred = credentials.Certificate("/Users/alex/Downloads/VS Code/project-argus/serviceAccountKey.json")
@@ -13,8 +12,29 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 members_ref = db.collection(u'members')
 history_ref = db.collection(u'history')
-
+settings_ref = db.collection(u'settings')
 # Create a callback on_snapshot function to capture changes
+class Encodings():
+    def __init__(self):
+        self.encodings = []
+        self.names = []
+       
+    def update(self):
+        self.encodings = []
+        self.names = []
+        for member in members_ref.stream():
+            self.names.append(member.id)
+            self.encodings.append(np.array(member.to_dict().get("image")))
+       
+    def get_encodings(self):
+        return self.encodings
+
+    def get_names(self):
+        return self.names
+
+encoding = Encodings()
+encoding.update()
+
 listener = threading.Event()
 def on_snapshot(col_snapshot, changes, read_time):
     for change in changes:
@@ -76,48 +96,34 @@ class Members(object):
         )
 class History():
     def __init__(self):
-        self.lastLog = 0
+        self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
 
-    def add_history(self,id,limit=5):
-        member = members_ref.document(id).get()
-        if int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog + limit: 
-            self.lastLog = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
-            history_ref.add({
-                u'id': id,
-                u'name': member.get("name"),
-                u'access': member.get("access"),
-                u'date': dt.datetime.now()
-            })
-     
+    def check_limit(self):
+        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("date")
+
+    def add_history(self, id):
+        self.lastLog = []
+        for identity in id:
+            member = members_ref.document(identity).get()
+            self.lastLog.append({
+                    u'id': identity,
+                    u'name': member.get("name"),
+                    u'access': member.get("access"),
+                    u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
+                    u'locked': False
+                })
+                # history_ref.add(self.lastLog)
+        history_ref.document(u'most_recent').set({'most_recent_log':self.lastLog})
+        # print(self.lastLog.get("date"))
+
 history_log = History()    
 
-# History.add_history('vUR4AGbeVdLoNm9OSJSi')
+# history_log.add_history(['N6bchCXVzP1e6m4SA9qs', 'vUR4AGbeVdLoNm9OSJSi'])
 
-class Encodings():
-    def __init__(self):
-        self.encodings = []
-        self.names = []
-       
-    def update(self):
-        self.encodings = []
-        self.names = []
-        for member in members_ref.stream():
-            self.names.append(member.id)
-            self.encodings.append(np.array(member.to_dict().get("image")))
-       
-    def get_encodings(self):
-        return self.encodings
-
-    def get_names(self):
-        return self.names
-
-encoding = Encodings()
-encoding.update()
+def config_camera_interval(cameraDuration):
+    settings_ref.document(u'configurations').set({u'cameraDuration':cameraDuration})
 
 def add_member(name, access, encoding):
     members_ref.add(Members(name, access, encoding).to_dict())
 
-# doc_ref = db.collection(u'history')
-
-# doc_ref.add({u"name":"Erin",u"access":1,u"locked":False})
 

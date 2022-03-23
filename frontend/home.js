@@ -102,3 +102,11 @@ deleteMembers.addEventListener("submit", (e) => {
     deleteMembers.reset();
   });
 });
+
+//Creates time interval between camera log
+const cameraDuration = document.getElementById("cameraDuration");
+const cameraDuration_output = document.getElementById("cameraDuration-output");
+cameraDuration_output.innerHTML = `${cameraDuration.value} seconds`;
+cameraDuration.oninput = () => {
+  cameraDuration_output.innerHTML = `${cameraDuration.value} seconds`;
+};

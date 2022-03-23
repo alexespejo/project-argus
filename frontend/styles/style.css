@@ -55,10 +55,6 @@ form {
   margin-bottom: 0.5rem;
 }
 
-input[type="submit"] {
-  cursor: pointer;
-}
-
 img {
   width: 100%;
   border-radius: 1rem;
@@ -69,6 +65,11 @@ img {
 h3 {
   margin: 0;
   padding: 0.5rem;
+}
+
+input[type="range"] {
+  outline: none;
+  cursor: pointer;
 }
 
 .custom-file-input::-webkit-file-upload-button {

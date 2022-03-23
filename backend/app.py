@@ -54,6 +54,11 @@ def update():
 
     return ('', 204)
 
+@app.route('/configuration',  methods=['GET', 'POST'])
+def config():
+    db.config_camera_interval(int(request.form.get('cameraDuration')))
+    return('', 204)
+    
 @app.route('/members')
 def members():
     return db.encoding.get_members()

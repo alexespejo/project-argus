@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="./styles/style.css" />
   </head>
   <body>
-    <img src="http://172.17.83.107:5001/video_feed" alt="Loading Video..." />
+    <img src="http://192.168.254.125:5001/video_feed" alt="Loading Video..." />
     <h3>Members List</h3>
     <div id="data"></div>
     <h3>Add Members</h3>
 
     <form
-      action=" http://172.17.83.107:5001/upload"
+      action=" http://192.168.254.125:5001/upload"
       method="POST"
       enctype="multipart/form-data"
     >
@@ -38,7 +38,7 @@
     </form>
     <h3>Update Member</h3>
     <form
-      action=" http://172.17.83.107:5001/update"
+      action=" http://192.168.254.125:5001/update"
       method="POST"
       enctype="multipart/form-data"
     >
@@ -49,6 +49,25 @@
       <label for="">Update Access Tier</label>
       <input type="number" name="changeAccess" />
       <input type="submit" value="Update" />
+    </form>
+    <h3>Configurations</h3>
+    <form
+      action=" http://192.168.254.125:5001/configuration"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <label for="cameraDuration">Change Time Limit</label>
+      <div id="cameraDuration-output"></div>
+      <input
+        type="range"
+        min="5"
+        max="100"
+        step="5"
+        name="cameraDuration"
+        id="cameraDuration"
+        value="5"
+      />
+      <input type="submit" value="Make Change" />
     </form>
   </body>
   <script type="module" src="./home.js"></script>
