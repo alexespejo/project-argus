@@ -4,6 +4,7 @@ from firebase_admin import firestore
 import threading 
 import datetime as dt
 import numpy as np
+from time import sleep 
 
 
 cred = credentials.Certificate("/Users/alex/Downloads/VS Code/project-argus/serviceAccountKey.json")
@@ -48,7 +49,7 @@ class Members(object):
             "image": self.image
         }
 
-    def update_member( id, name, access):
+    def update_member(id, name, access):
         update_ref = members_ref.document(id)
         if (name != "" and access != ""):
             update_ref.update({
@@ -73,20 +74,24 @@ class Members(object):
                 lastAccess={self.lastAccess}\
             )'
         )
-class History(Members):
-    def __init__(self, name, access=3, image=[], locked = False):
-        super().__init__(name, access, image)
-        self.locked = locked
+class History():
+    def __init__(self):
+        self.lastLog = 0
 
-    def create_log(self):
-        return {
-            u"name": self.name,
-            u"access": self.access,
-            u"timeAccess": dt.datetime.now(),
-            u"locked": self.locked 
-        }
+    def add_history(self,id,limit=5):
+        member = members_ref.document(id).get()
+        if int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog + limit: 
+            self.lastLog = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
+            history_ref.add({
+                u'id': id,
+                u'name': member.get("name"),
+                u'access': member.get("access"),
+                u'date': dt.datetime.now()
+            })
+     
+history_log = History()    
 
-
+# History.add_history('vUR4AGbeVdLoNm9OSJSi')
 
 class Encodings():
     def __init__(self):
@@ -97,7 +102,7 @@ class Encodings():
         self.encodings = []
         self.names = []
         for member in members_ref.stream():
-            self.names.append(member.to_dict().get("name"))
+            self.names.append(member.id)
             self.encodings.append(np.array(member.to_dict().get("image")))
        
     def get_encodings(self):
@@ -115,3 +120,4 @@ def add_member(name, access, encoding):
 # doc_ref = db.collection(u'history')
 
 # doc_ref.add({u"name":"Erin",u"access":1,u"locked":False})
+

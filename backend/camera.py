@@ -3,7 +3,6 @@ import cv2
 import face_recognition
 import numpy as np
 import main_db as db
-
 app=Flask(__name__)
 camera = cv2.VideoCapture(0)
 
@@ -42,10 +41,11 @@ def gen_frames():
                 best_match_index = np.argmin(face_distances)
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
-                    print(name)
-                    #ds.add_log(name, dateTime)
+                    db.History.add_history(name)
+                   
                 face_names.append(name) 
 
+                print(face_names)
             # Display the results
             for (top, right, bottom, left), name in zip(face_locations, face_names):
                 # Scale back up face locations since the frame we detected in was scaled to 1/4 size
