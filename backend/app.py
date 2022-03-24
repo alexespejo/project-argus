@@ -63,9 +63,6 @@ def config():
 def members():
     return db.encoding.get_members()
 
-@app.route('/cameraInterval')
-def cameraInterval():
-    return db.get_config_camera_interval()
 
 @app.route('/video_feed')
 def video_feed():
@@ -73,6 +70,3 @@ def video_feed():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True)
-
-
-# Add settings configurations 

@@ -3,6 +3,7 @@ import cv2
 import face_recognition
 import numpy as np
 import firestore as db
+import datetime as dt 
 app=Flask(__name__)
 camera = cv2.VideoCapture(0)
 
@@ -13,6 +14,8 @@ face_names = []
 process_this_frame = True
 
 def gen_frames():  
+    timeLimit = db.get_config_camera_interval()
+    recentTime = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
     while True:
         known_face_encodings = db.encoding.get_encodings()
         known_face_names = db.encoding.get_names()
@@ -41,9 +44,13 @@ def gen_frames():
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
                 face_names.append(name) 
-                if db.history_log.check_limit():
+                if int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= timeLimit + recentTime:
                         db.history_log.add_history(face_names)
+                        timeLimit =  db.get_config_camera_interval()
+                        recentTime = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
+                        print(timeLimit)
                 print(face_names)
+                
 
              
             #Display the results

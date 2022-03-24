@@ -6,7 +6,7 @@ import datetime as dt
 import numpy as np
 
 
-cred = credentials.Certificate("/Users/alex/Downloads/VS Code/project-argus/serviceAccountKey.json")
+cred = credentials.Certificate("/Users/alex/Downloads/VS Code/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -104,7 +104,7 @@ class History(): #methods to interact with history collection
         self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
 
     def check_limit(self):
-        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("timeStamp") + get_config_camera_interval().get('cameraDuration')
+        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("timeStamp") + get_config_camera_interval()
 
     def add_history(self, id):
         self.lastLog = []
@@ -120,19 +120,18 @@ class History(): #methods to interact with history collection
             members_ref.document(identity).update({u'lastAccess': dt.datetime.now()})
         
         history_ref.document(u'most_recent').set({'most_recent_log':self.lastLog})
-        history_ref.add({
-            u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
-            u'history': self.lastLog})
-        # print(self.lastLog.get("date"))
+        # history_ref.add({
+        #     u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
+        #     u'history': self.lastLog})
 
 history_log = History()    
+# print(history_ref.document(u'most_recent').get().get(u'most_recent_log')) 
 
-        #update settings
 def config_camera_interval(cameraDuration):
     settings_ref.document(u'configurations').set({u'cameraDuration':cameraDuration})
 
 def get_config_camera_interval():
-    return  settings_ref.document(u'configurations').get().to_dict()
+    return  settings_ref.document(u'configurations').get().to_dict().get('cameraDuration')
 
 # print(get_config_camera_interval())
 # print(history_log.check_limit())
