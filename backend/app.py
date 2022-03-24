@@ -1,9 +1,9 @@
 import face_recognition
-from flask import Flask, render_template, request, redirect, Response
+from flask import Flask, request, redirect, Response
 import camera 
 import firestore as db
 import datetime as dt 
-# You can change this to any folder on your system
+# You can change     this to any folder on your system
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
@@ -19,7 +19,7 @@ def detect_faces_in_image(name, access, file_stream):
     unknown_face_encodings = face_recognition.face_encodings(img)[0].tolist()
 
     db.add_member(name, access, unknown_face_encodings)
-    return redirect('http://127.0.0.1:5500/frontend/home.html')
+    return ('', 204)
 
 @app.route('/')
 def root():
@@ -62,6 +62,10 @@ def config():
 @app.route('/members')
 def members():
     return db.encoding.get_members()
+
+@app.route('/cameraInterval')
+def cameraInterval():
+    return db.get_config_camera_interval()
 
 @app.route('/video_feed')
 def video_feed():

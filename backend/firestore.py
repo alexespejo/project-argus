@@ -47,7 +47,6 @@ class Encodings():  #initializes the encodings and names for the camera to read
             self.encodings.append(np.array(member.to_dict().get("image")))
 
     def get_encodings(self):
-        print(self.encodings)
         return self.encodings
 
     def get_names(self):
@@ -98,12 +97,14 @@ class Members(object): #creates a member for the database
                 lastAccess={self.lastAccess}\
             )'
         )
+
+
 class History(): #methods to interact with history collection 
     def __init__(self):
         self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
 
     def check_limit(self):
-        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("date") + get_config_camera_interval()
+        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("timeStamp") + get_config_camera_interval()
 
     def add_history(self, id):
         self.lastLog = []
@@ -126,13 +127,15 @@ class History(): #methods to interact with history collection
 
 history_log = History()    
 
-#update settings
+        #update settings
 def config_camera_interval(cameraDuration):
     settings_ref.document(u'configurations').set({u'cameraDuration':cameraDuration})
 
 def get_config_camera_interval():
-    return  settings_ref.document(u'configurations').get().get('cameraDuration')
+    return  settings_ref.document(u'configurations').get().to_dict()
 print(get_config_camera_interval())
+print(history_log.check_limit())
+
 
 #add member to the database 
 def add_member(name, access, encoding):
