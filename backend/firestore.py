@@ -104,7 +104,7 @@ class History(): #methods to interact with history collection
         self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
 
     def check_limit(self):
-        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("timeStamp") + get_config_camera_interval()
+        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("timeStamp") + get_config_camera_interval().get('cameraDuration')
 
     def add_history(self, id):
         self.lastLog = []
@@ -133,8 +133,9 @@ def config_camera_interval(cameraDuration):
 
 def get_config_camera_interval():
     return  settings_ref.document(u'configurations').get().to_dict()
-print(get_config_camera_interval())
-print(history_log.check_limit())
+
+# print(get_config_camera_interval())
+# print(history_log.check_limit())
 
 
 #add member to the database 

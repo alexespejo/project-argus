@@ -41,8 +41,8 @@ def gen_frames():
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
                 face_names.append(name) 
-                # if db.history_log.check_limit():
-                #         db.history_log.add_history(face_names)
+                if db.history_log.check_limit():
+                        db.history_log.add_history(face_names)
                 print(face_names)
 
              
