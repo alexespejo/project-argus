@@ -52,6 +52,7 @@ function setAttributes() {
 }
 //Realtime updates UI for changes in the database
 //NOTES**** split up update and delete functionality into seperate files later on
+
 const deleteSelector = document.getElementById("deleteMember");
 const updateSelector = document.getElementById("updateMember");
 const data = document.getElementById("data");
@@ -61,6 +62,7 @@ onSnapshot(colRef, (snapshot) => {
   updateSelector.innerHTML = "";
   deleteSelector.appendChild(setAttributes());
   updateSelector.appendChild(setAttributes());
+
   //
   data.innerHTML = "";
   const memberslist = [];
@@ -90,6 +92,18 @@ onSnapshot(colRef, (snapshot) => {
     updateSelector.appendChild(updateItem);
   }
 });
+
+const historyRef = db.collection(db, "history");
+const cameraLogs = document.getElementById("camera-logs");
+onSnapshot(historyRef, (snapshot) => {
+  cameraLogs.innerHTML = "";
+  snapshot.forEach((doc) => {
+    const x = doc.data();
+    x.id = doc.id;
+    print(x);
+  });
+});
+
 //DELETES Members based off a selection of user name
 const deleteMembers = document.querySelector(".delete");
 deleteMembers.addEventListener("submit", (e) => {
@@ -112,13 +126,3 @@ cameraDuration.oninput = () => {
 };
 
 //Display Camera Logs
-// const historyRef = db.collection(db, "history");
-// const cameraLogs = document.getElementById("camera-logs");
-
-// const q = query(collection(db, "history"), where("name", "==", "Alex"));
-
-// const querySnapshot = await getDocs(q);
-// querySnapshot.forEach((doc) => {
-//   // doc.data() is never undefined for query doc snapshots
-//   console.log(doc.id, " => ", doc.data());
-// });
