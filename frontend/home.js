@@ -93,17 +93,6 @@ onSnapshot(colRef, (snapshot) => {
   }
 });
 
-const historyRef = db.collection(db, "history");
-const cameraLogs = document.getElementById("camera-logs");
-onSnapshot(historyRef, (snapshot) => {
-  cameraLogs.innerHTML = "";
-  snapshot.forEach((doc) => {
-    const x = doc.data();
-    x.id = doc.id;
-    print(x);
-  });
-});
-
 //DELETES Members based off a selection of user name
 const deleteMembers = document.querySelector(".delete");
 deleteMembers.addEventListener("submit", (e) => {
@@ -118,11 +107,33 @@ deleteMembers.addEventListener("submit", (e) => {
 });
 
 //Creates time interval between camera log
+const settingRef = doc(db, "settings", "configurations");
+const docSnap = await getDoc(settingRef);
+
 const cameraDuration = document.getElementById("cameraDuration");
 const cameraDuration_output = document.getElementById("cameraDuration-output");
-cameraDuration_output.innerHTML = `${cameraDuration.value} seconds`;
+cameraDuration_output.innerHTML = `${docSnap.data().cameraDuration} seconds`;
+
+cameraDuration.setAttribute("value", docSnap.data().cameraDuration);
 cameraDuration.oninput = () => {
   cameraDuration_output.innerHTML = `${cameraDuration.value} seconds`;
 };
 
 //Display Camera Logs
+const cameraLogs = document.getElementById("camera-logs");
+const historyRef = collection(db, "history");
+
+const querySnapshot = await getDocs(historyRef);
+querySnapshot.forEach((doc) => {
+  // doc.data() is never undefined for query doc snapshots
+  if (doc.id != "most_recent") {
+    const logTime = document.createElement("p");
+    const logPerson = document.createElement("h3");
+
+    logTime.innerHTML = `${JSON.stringify(doc.data().history[0].name)} ${
+      doc.data().date
+    }`;
+
+    cameraLogs.appendChild(logTime);
+  }
+});

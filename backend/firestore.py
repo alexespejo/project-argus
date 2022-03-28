@@ -6,7 +6,7 @@ import datetime as dt
 import numpy as np
 
 
-cred = credentials.Certificate("/Users/alex/Downloads/VS Code/serviceAccountKey.json")
+cred = credentials.Certificate("/Users/alex/Downloads/VS Code/project-argus/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -87,18 +87,6 @@ class Members(object): #creates a member for the database
             update_ref.update({
                 u'access': int(access)
             })
-    
-    def __repr__(self):
-        return(
-            f'Members(\
-                name={self.name}, \
-                access={self.access}, \
-                lastUpdated={self.lastUpdated}, \
-                lastAccess={self.lastAccess}\
-            )'
-        )
-
-
 class History(): #methods to interact with history collection 
     def __init__(self):
         self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
@@ -120,9 +108,9 @@ class History(): #methods to interact with history collection
             members_ref.document(identity).update({u'lastAccess': dt.datetime.now()})
         
         history_ref.document(u'most_recent').set({'most_recent_log':self.lastLog})
-        # history_ref.add({
-        #     u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
-        #     u'history': self.lastLog})
+        history_ref.add({
+            u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
+            u'history': self.lastLog})
 
 history_log = History()    
 # print(history_ref.document(u'most_recent').get().get(u'most_recent_log')) 
