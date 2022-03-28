@@ -1,1 +1,3 @@
 .serviceAccount.json 
+.DS_Store
+.__pycahce__
