@@ -74,25 +74,4 @@ input[type="range"],
   outline: none;
   cursor: pointer;
 }
-
-.custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
-}
-
-.custom-file-input {
-  width: 8rem;
-  border: 0.1rem rgba(0, 0, 0, 0.1) solid;
-  border-radius: 0.5rem;
-}
-
-.custom-file-input::before {
-  content: "Upload File";
-  display: inline-block;
-  background: white;
-  padding: 0.5rem;
-  outline: none;
-  cursor: pointer;
-  font-size: 10pt;
-  width: 100%;
-}
 /*# sourceMappingURL=style.css.map */

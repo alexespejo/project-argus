@@ -79,7 +79,23 @@ onSnapshot(colRef, (snapshot) => {
     const deleteItem = document.createElement("option");
     const updateItem = document.createElement("option");
 
-    displayItem.innerHTML = `${memberslist[x].name} Tier: ${memberslist[x].access} Last Access: ${memberslist[x].lastAccess}`;
+    displayItem.innerHTML = `${memberslist[x].name} Tier: ${
+      memberslist[x].access
+    } ${
+      memberslist[x].lastAccess != null
+        ? `Last Access: ${new Date(
+            memberslist[x].lastAccess.year,
+            memberslist[x].lastAccess.month,
+            memberslist[x].lastAccess.day,
+            memberslist[x].lastAccess.hour,
+            memberslist[x].lastAccess.minute,
+            memberslist[x].lastAccess.seconds
+          )}`
+        : ""
+    }`;
+    console.log(
+      memberslist[x].lastAccess != null ? memberslist[x].lastAccess : ""
+    );
 
     deleteItem.setAttribute("value", memberslist[x].id);
     updateItem.setAttribute("value", memberslist[x].id);
@@ -123,17 +139,18 @@ cameraDuration.oninput = () => {
 const cameraLogs = document.getElementById("camera-logs");
 const historyRef = collection(db, "history");
 
-const querySnapshot = await getDocs(historyRef);
-querySnapshot.forEach((doc) => {
-  // doc.data() is never undefined for query doc snapshots
-  if (doc.id != "most_recent") {
-    const logTime = document.createElement("p");
-    const logPerson = document.createElement("h3");
+const queryHistory = await getDocs(historyRef);
+queryHistory.forEach((log) => {
+  if (log.id != "most_recent") {
+    // const logTime = logument.createElement("p");
+    // logTime.innerHTML = `${JSON.stringify(log.data().history[0].name)} ${
+    //   log.data().date
+    // }`;
 
-    logTime.innerHTML = `${JSON.stringify(doc.data().history[0].name)} ${
-      doc.data().date
-    }`;
-
-    cameraLogs.appendChild(logTime);
+    // cameraLogs.appendChild(logTime);
+    deleteDoc(doc(db, "history", log.id));
   }
 });
+
+const queryMostRecent = await getDoc(doc(db, "history", "most_recent"));
+console.log(queryMostRecent.get("most_recent_log")[0]);

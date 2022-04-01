@@ -15,7 +15,10 @@ process_this_frame = True
 
 def gen_frames():  
     timeLimit = db.get_config_camera_interval()
-    recentTime = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
+    recentTime =int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
+    print(recentTime)
+    recentPerson = db.history_log.get_most_recent_member()
+    print(timeLimit)
     while True:
         known_face_encodings = db.encoding.get_encodings()
         known_face_names = db.encoding.get_names()
@@ -43,16 +46,17 @@ def gen_frames():
                 best_match_index = np.argmin(face_distances)
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
-                face_names.append(name) 
-                if int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= timeLimit + recentTime:
-                        db.history_log.add_history(face_names)
-                        timeLimit =  db.get_config_camera_interval()
-                        recentTime = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
-                        print(timeLimit)
+                face_names.append(name)      
+                if name != recentPerson and int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= recentTime + 10 or int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= recentTime + timeLimit: #if it's a different person 
+                    db.history_log.add_history(face_names)
+                    timeLimit =  db.get_config_camera_interval()
+                    recentTime = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
+                    recentPerson = name
+                    print(timeLimit)
+                    
                 print(face_names)
                 
 
-             
             #Display the results
             for (top, right, bottom, left), name in zip(face_locations, face_names):
                 # Scale back up face locations since the frame we detected in was scaled to 1/4 size

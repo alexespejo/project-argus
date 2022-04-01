@@ -41,7 +41,7 @@ def upload_image():
 
         if file and allowed_file(file.filename):
             return detect_faces_in_image(name, access, file)
-    return ('', 204)
+    return redirect('/video_feed')
 
 @app.route('/update', methods=['GET', 'POST'])
 def update():
@@ -50,7 +50,7 @@ def update():
     changeName = request.form.get("changeName")
     changeAccess = request.form.get("changeAccess")
 
-    db.Members.update_member(member, changeName, changeAccess)
+    db.update_member(member, changeName, changeAccess)
 
     return ('', 204)
 
@@ -63,9 +63,9 @@ def config():
 def members():
     return db.encoding.get_members()
 
-
 @app.route('/video_feed')
 def video_feed():
+    print('CAMERA RUN')
     return Response(camera.gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":

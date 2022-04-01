@@ -23,16 +23,25 @@ def on_snapshot(col_snapshot, changes, read_time):
     for change in changes:
         if change.type.name == 'ADDED' or change.type.name == 'MODIFIED':
             encoding.update()
-            print(change.document.id)
+            # print(change.document.id)
         elif change.type.name == 'REMOVED':
             encoding.update()
             print(f'Removed {change.document.id}')
             listener.set()
     print(changes)
-col_query =  members_ref
-query_watch = col_query.on_snapshot(on_snapshot)
 
+query_watch = members_ref.on_snapshot(on_snapshot)
 
+def create_time_dict():
+    return {
+        u'month': int(dt.datetime.now().strftime("%m")),
+        u'day':  int(dt.datetime.now().strftime("%d")), 
+        u'year':  int(dt.datetime.now().strftime("%Y")), 
+        u'hour': int(dt.datetime.now().strftime("%H")),
+        u'minute':  int(dt.datetime.now().strftime("%M")),
+        u'seconds':  int(dt.datetime.now().strftime("%S"))
+    }
+    
 class Encodings():  #initializes the encodings and names for the camera to read 
     def __init__(self):
         self.encodings = []
@@ -71,49 +80,49 @@ class Members(object): #creates a member for the database
             "lastAccess": self.lastAccess,
             "image": self.image
         }
-    #update member settings 
-    def update_member(id, name, access):
-        update_ref = members_ref.document(id)
-        if (name != "" and access != ""):
-            update_ref.update({
-                u'name': name,
-                u'access': int(access)
-            })
-        elif (name != ""):
-            update_ref.update({
-                u'name':name
-            })
-        elif (access != ""):
-            update_ref.update({
-                u'access': int(access)
-            })
+
 class History(): #methods to interact with history collection 
     def __init__(self):
         self.lastLog = history_ref.document(u'most_recent').get().get(u'most_recent_log')
+        self.lastPerson = history_ref.document(u'most_recent').get().get(u'most_recent_log')[0].get('name')
 
-    def check_limit(self):
-        return int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= self.lastLog[0].get("timeStamp") + get_config_camera_interval()
+    def get_most_recent_member(self):
+        return self.lastPerson
+
+    def get_most_recent_time(self):
+        return self.lastLog
 
     def add_history(self, id):
         self.lastLog = []
+    
         for identity in id:
-            member = members_ref.document(identity).get()
-            self.lastLog.append({
-                    u'id': identity,
-                    u'name': member.get("name"),
-                    u'access': member.get("access"),
-                    u'timeStamp': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
+            if (identity == "unknown"):
+                 self.lastLog.append({
+                    u'id': "unknown",
+                    u'name':"unknown",
+                    u'access': "unknown",
+                    u'timeStamp': create_time_dict(),
                     u'locked': False
                 })
-            members_ref.document(identity).update({u'lastAccess': dt.datetime.now()})
-        
+            else:
+                member = members_ref.document(identity).get()
+                self.lastLog.append({
+                        u'id': identity,
+                        u'name': member.get("name"),
+                        u'access': member.get("access"),
+                        u'timeStamp': create_time_dict(),
+                        u'locked': False
+                    })
+                members_ref.document(identity).update({u'lastAccess': create_time_dict()})
+            
         history_ref.document(u'most_recent').set({'most_recent_log':self.lastLog})
         history_ref.add({
             u'date': int(dt.datetime.now().strftime("%Y%m%d%H%M%S")),
             u'history': self.lastLog})
 
 history_log = History()    
-# print(history_ref.document(u'most_recent').get().get(u'most_recent_log')) 
+# history_log.add_history(['dGNMh2LtzNAxtpjtVbZg', 'unknown'])
+# print(history_log.get_most_recent_member())
 
 def config_camera_interval(cameraDuration):
     settings_ref.document(u'configurations').set({u'cameraDuration':cameraDuration})
@@ -121,12 +130,23 @@ def config_camera_interval(cameraDuration):
 def get_config_camera_interval():
     return  settings_ref.document(u'configurations').get().to_dict().get('cameraDuration')
 
-# print(get_config_camera_interval())
-# print(history_log.check_limit())
-
-
 #add member to the database 
 def add_member(name, access, encoding):
     members_ref.add(Members(name, access, encoding).to_dict())
 
-
+    #update member settings 
+def update_member(id, name, access):
+    update_ref = members_ref.document(id)
+    if (name != "" and access != ""):
+        update_ref.update({
+            u'name': name,
+            u'access': int(access)
+        })
+    elif (name != ""):
+        update_ref.update({
+            u'name':name
+        })
+    elif (access != ""):
+        update_ref.update({
+            u'access': int(access)
+        })
