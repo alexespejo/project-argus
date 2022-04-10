@@ -57,9 +57,9 @@ The facial recognition software on a Raspberry PI and camera has been tested for
 
 -Plan to fully create the app in React.js
 
--Implement pyTorch or TensorFlow to the face recognition system
+-Improve face recogntion software with machine learning tools like Tensorflow or pyTorch
 
--Bring in D3 for processing analytics to the app
+-Bring in D3 for presenting analytics to the app
 
 ---
 
