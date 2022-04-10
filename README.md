@@ -17,6 +17,12 @@ The camera and web app backends are built with Flask and Firebase using the Fire
 
 IOT: Raspberry PI, Raspberry PI Camera V2, Python, Flask, OpenCV
 
-APP: HTML, CSS, JavaScript, React, Tailwind, SCSS
+APP: HTML, CSS, JavaScript, Boostrap, SCSS
 
 BACKEND: Python, Flask, Firebase, Firestore
+
+### Futures
+
+Plan to fully create the app in React.js
+-Implement pyTorch or TensorFlow to the face recognition system
+-Bring in D3 for processing analytics to the app
