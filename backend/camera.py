@@ -14,14 +14,14 @@ face_names = []
 process_this_frame = True
 
 def gen_frames():  
-    timeLimit = db.get_config_camera_interval()
+    timeLimit = db.get_config_camera_interval() #gettign time intrval
     recentTime =int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
     print(recentTime)
-    recentPerson = db.history_log.get_most_recent_member()
+    recentPerson = db.history_log.get_most_recent_member() #getting the most recent time
     print(timeLimit)
     while True:
-        known_face_encodings = db.encoding.get_encodings()
-        known_face_names = db.encoding.get_names()
+        known_face_encodings = db.encoding.get_encodings() #getting the encodings
+        known_face_names = db.encoding.get_names() #getting the ids 
         success, frame = camera.read()  # read the camera frame
         if not success:
             break
@@ -48,12 +48,14 @@ def gen_frames():
                     name = known_face_names[best_match_index]
                 face_names.append(name)      
                 if name != recentPerson and int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= recentTime + 10 or int(dt.datetime.now().strftime("%Y%m%d%H%M%S")) >= recentTime + timeLimit: #if it's a different person 
-                    db.history_log.add_history(face_names)
-                    timeLimit =  db.get_config_camera_interval()
-                    recentTime = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
-                    recentPerson = name
-                    print(timeLimit)
-                    
+                    try:
+                        db.history_log.add_history(face_names) #log history 
+                        timeLimit =  db.get_config_camera_interval() #gettign the time interval 
+                        recentTime = int(dt.datetime.now().strftime("%Y%m%d%H%M%S"))
+                        recentPerson = name
+                        print(timeLimit)
+                    except:
+                        print('error')
                 print(face_names)
                 
 

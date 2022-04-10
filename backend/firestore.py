@@ -34,10 +34,10 @@ query_watch = members_ref.on_snapshot(on_snapshot)
 
 def create_time_dict():
     return {
-        u'month': int(dt.datetime.now().strftime("%m")),
+        u'month':30* int(dt.datetime.now().strftime("%m")),
         u'day':  int(dt.datetime.now().strftime("%d")), 
         u'year':  int(dt.datetime.now().strftime("%Y")), 
-        u'hour': int(dt.datetime.now().strftime("%H")),
+        u'hour': 60 * int(dt.datetime.now().strftime("%H")),
         u'minute':  int(dt.datetime.now().strftime("%M")),
         u'seconds':  int(dt.datetime.now().strftime("%S"))
     }

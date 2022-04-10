@@ -140,17 +140,14 @@ const cameraLogs = document.getElementById("camera-logs");
 const historyRef = collection(db, "history");
 
 const queryHistory = await getDocs(historyRef);
+
 queryHistory.forEach((log) => {
   if (log.id != "most_recent") {
-    // const logTime = logument.createElement("p");
-    // logTime.innerHTML = `${JSON.stringify(log.data().history[0].name)} ${
-    //   log.data().date
-    // }`;
-
-    // cameraLogs.appendChild(logTime);
-    deleteDoc(doc(db, "history", log.id));
+    const logTime = document.createElement("p");
+    logTime.innerHTML = `${JSON.stringify(log.data().history[0].name)} ${
+      log.data().date
+    }`;
+    cameraLogs.appendChild(logTime);
+    // deleteDoc(doc(db, "history", log.id));
   }
 });
-
-const queryMostRecent = await getDoc(doc(db, "history", "most_recent"));
-console.log(queryMostRecent.get("most_recent_log")[0]);
