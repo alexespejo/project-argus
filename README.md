@@ -54,6 +54,8 @@ The baseline demo functionality of the app is near completion in vanilla HTML, C
 
 The facial recognition software on a Raspberry PI and camera has been tested for proof of feasibility, but has yet to be properly implemented and tested.
 
+All testing and development of both the app and the camera is being preformed on my own person operating system
+
 ---
 
 ### Futures
