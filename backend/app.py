@@ -1,16 +1,18 @@
 import face_recognition
 from flask import Flask, request, redirect, Response
-import camera 
+import camera
 import firestore as db
-import datetime as dt 
+import datetime as dt
 # You can change     this to any folder on your system
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def detect_faces_in_image(name, access, file_stream):
     # Load the uploaded image filed
@@ -21,9 +23,11 @@ def detect_faces_in_image(name, access, file_stream):
     db.add_member(name, access, unknown_face_encodings)
     return ('', 204)
 
+
 @app.route('/')
 def root():
     return ('', 204)
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_image():
@@ -43,30 +47,35 @@ def upload_image():
             return detect_faces_in_image(name, access, file)
     return redirect('/video_feed')
 
+
 @app.route('/update', methods=['GET', 'POST'])
 def update():
     db.encoding.update()
     member = request.form.get("updateMember")
     changeName = request.form.get("changeName")
-    changeAccess = request.form.get("changeAccess")
+    changeAccess = int(request.form.get("changeAccess"))
 
     db.update_member(member, changeName, changeAccess)
 
     return ('', 204)
 
+
 @app.route('/configuration',  methods=['GET', 'POST'])
 def config():
     db.config_camera_interval(int(request.form.get('cameraDuration')))
     return('', 204)
-    
+
+
 @app.route('/members')
 def members():
     return db.encoding.get_members()
+
 
 @app.route('/video_feed')
 def video_feed():
     print('CAMERA RUN')
     return Response(camera.gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True)
