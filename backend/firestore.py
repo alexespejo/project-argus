@@ -37,7 +37,7 @@ def on_snapshot(col_snapshot, changes, read_time):
 query_watch = members_ref.on_snapshot(on_snapshot)
 
 
-def create_time_dict():
+def create_time_dict():  # create date dict
     return {
         u'month': 30 * int(dt.datetime.now().strftime("%m")),
         u'day':  int(dt.datetime.now().strftime("%d")),
