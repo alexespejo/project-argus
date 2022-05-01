@@ -68,13 +68,19 @@ def config():
 
 @app.route('/members')
 def members():
-    return db.encoding.get_members()
+    print(type(db.encoding.get_names()))
+    return str(db.encoding.get_names())
 
 
 @app.route('/video_feed')
 def video_feed():
     print('CAMERA RUN')
     return Response(camera.gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/recent_person')
+def recent_person():
+    return db.history_log.get_most_recent_member()
 
 
 if __name__ == "__main__":
