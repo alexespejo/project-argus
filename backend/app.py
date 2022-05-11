@@ -53,8 +53,9 @@ def update():
     db.encoding.update()
     member = request.form.get("updateMember")
     changeName = request.form.get("changeName")
-    changeAccess = int(request.form.get("changeAccess"))
-
+    changeAccess = request.form.get("changeAccess")
+    if changeAccess == None:
+        changeAccess = ""
     db.update_member(member, changeName, changeAccess)
 
     return ('', 204)

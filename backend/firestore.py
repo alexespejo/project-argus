@@ -170,7 +170,7 @@ def update_member(id, name, access):
     if (name != "" and access != ""):
         update_ref.update({
             u'name': name,
-            u'access': access
+            u'access': int(access)
         })
     elif (name != ""):
         update_ref.update({
@@ -178,7 +178,7 @@ def update_member(id, name, access):
         })
     elif (access != ""):
         update_ref.update({
-            u'access': access
+            u'access': int(access)
         })
 
 
